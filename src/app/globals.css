@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f7f5f0;
+  --foreground: #1c2321;
+  --card: #ffffff;
+  --border: #e2ddd0;
+  --muted: #8c8b85;
+
+  --brand-ink: #1c2321;
+  --brand-amber: #e8871e;
+  --brand-concrete: #8c8b85;
+
+  --tier-free: #3e7b5c;
+  --tier-free-soft: #e3f0e9;
+  --tier-silver: #5f6b78;
+  --tier-silver-soft: #e7e9ec;
+  --tier-gold: #b8860b;
+  --tier-gold-soft: #f5ecd6;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-border: var(--border);
+  --color-muted: var(--muted);
+
+  --color-brand-ink: var(--brand-ink);
+  --color-brand-amber: var(--brand-amber);
+  --color-brand-concrete: var(--brand-concrete);
+
+  --color-tier-free: var(--tier-free);
+  --color-tier-free-soft: var(--tier-free-soft);
+  --color-tier-silver: var(--tier-silver);
+  --color-tier-silver-soft: var(--tier-silver-soft);
+  --color-tier-gold: var(--tier-gold);
+  --color-tier-gold-soft: var(--tier-gold-soft);
+
+  --font-heading: var(--font-oswald);
+  --font-sans: var(--font-inter);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
