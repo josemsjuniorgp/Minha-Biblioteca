@@ -37,57 +37,71 @@ export async function GET(request: Request) {
     return Response.json({ error: "não autorizado" }, { status: 401 });
   }
 
-  const supabase = createAdminClient();
-  const { data: sources, error: sourcesError } = await supabase
-    .from("news_sources")
-    .select("*")
-    .eq("active", true);
+  try {
+    const supabase = createAdminClient();
+    const { data: sources, error: sourcesError } = await supabase
+      .from("news_sources")
+      .select("*")
+      .eq("active", true);
 
-  if (sourcesError) {
-    return Response.json({ error: sourcesError.message }, { status: 500 });
-  }
-
-  const results: { source: string; inseridos: number; erro?: string }[] = [];
-
-  for (const source of sources ?? []) {
-    try {
-      const response = await fetch(source.rss_url, {
-        headers: { "user-agent": "Industria360NewsBot/1.0" },
-        signal: AbortSignal.timeout(15_000),
-      });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-      const xml = await response.text();
-      const items = extractItems(xml)
-        .filter((item) => item.title && item.link)
-        .slice(0, 30)
-        .map((item) => ({
-          source_id: source.id,
-          title: item.title!.trim(),
-          link: item.link!.trim(),
-          published_at: item.pubDate ? new Date(item.pubDate).toISOString() : null,
-        }));
-
-      if (items.length === 0) {
-        results.push({ source: source.name, inseridos: 0 });
-        continue;
-      }
-
-      const { error: upsertError, count } = await supabase
-        .from("news_items")
-        .upsert(items, { onConflict: "source_id,link", ignoreDuplicates: true, count: "exact" });
-
-      if (upsertError) throw upsertError;
-
-      results.push({ source: source.name, inseridos: count ?? items.length });
-    } catch (err) {
-      results.push({
-        source: source.name,
-        inseridos: 0,
-        erro: err instanceof Error ? err.message : "erro desconhecido",
-      });
+    if (sourcesError) {
+      return Response.json(
+        { error: "sources_error", message: sourcesError.message },
+        { status: 500 },
+      );
     }
-  }
 
-  return Response.json({ ok: true, resultados: results });
+    const results: { source: string; inseridos: number; erro?: string }[] = [];
+
+    for (const source of sources ?? []) {
+      try {
+        const response = await fetch(source.rss_url, {
+          headers: { "user-agent": "Industria360NewsBot/1.0" },
+          signal: AbortSignal.timeout(15_000),
+        });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const xml = await response.text();
+        const items = extractItems(xml)
+          .filter((item) => item.title && item.link)
+          .slice(0, 30)
+          .map((item) => ({
+            source_id: source.id,
+            title: item.title!.trim(),
+            link: item.link!.trim(),
+            published_at: item.pubDate ? new Date(item.pubDate).toISOString() : null,
+          }));
+
+        if (items.length === 0) {
+          results.push({ source: source.name, inseridos: 0 });
+          continue;
+        }
+
+        const { error: upsertError, count } = await supabase
+          .from("news_items")
+          .upsert(items, { onConflict: "source_id,link", ignoreDuplicates: true, count: "exact" });
+
+        if (upsertError) throw upsertError;
+
+        results.push({ source: source.name, inseridos: count ?? items.length });
+      } catch (err) {
+        results.push({
+          source: source.name,
+          inseridos: 0,
+          erro: err instanceof Error ? err.message : "erro desconhecido",
+        });
+      }
+    }
+
+    return Response.json({ ok: true, resultados: results });
+  } catch (err) {
+    return Response.json(
+      {
+        error: "handler_error",
+        message: err instanceof Error ? err.message : String(err),
+        stack: err instanceof Error ? err.stack : undefined,
+      },
+      { status: 500 },
+    );
+  }
 }
