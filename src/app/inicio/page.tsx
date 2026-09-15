@@ -32,12 +32,7 @@ export default async function InicioPage() {
     redirect("/login");
   }
 
-  const [
-    { data: profile, error: profileError },
-    { data: content },
-    { data: sources },
-    { data: newsItems },
-  ] =
+  const [{ data: profile }, { data: content }, { data: sources }, { data: newsItems }] =
     await Promise.all([
       supabase.from("profiles").select("*").eq("id", user.id).single(),
       supabase
@@ -71,17 +66,6 @@ export default async function InicioPage() {
       <AppHeader nome={profile?.nome ?? "usuário"} isAdmin={Boolean(profile?.admin_role)} />
       <main className="flex-1 px-6 py-10 sm:px-10">
         <div className="mx-auto flex max-w-6xl flex-col gap-12">
-          {profileError && (
-            <div className="rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-800">
-              <strong>Debug temporário — erro ao buscar perfil:</strong>
-              <br />
-              código: {profileError.code} · {profileError.message}
-              <br />
-              details: {profileError.details} · hint: {profileError.hint}
-              <br />
-              user.id consultado: {user.id}
-            </div>
-          )}
           <section>
             <h1 className="font-heading text-3xl font-semibold uppercase tracking-tight text-brand-ink">
               Olá, {profile?.nome?.split(" ")[0] ?? ""}
