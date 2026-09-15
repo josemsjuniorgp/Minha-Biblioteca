@@ -31,7 +31,9 @@ function extractItems(xml: string): FeedItem[] {
 export async function GET(request: Request) {
   const secret = process.env.CRON_SECRET;
   const authHeader = request.headers.get("authorization");
-  if (secret && authHeader !== `Bearer ${secret}`) {
+  const secretParam = new URL(request.url).searchParams.get("secret");
+  const authorized = authHeader === `Bearer ${secret}` || secretParam === secret;
+  if (secret && !authorized) {
     return Response.json({ error: "não autorizado" }, { status: 401 });
   }
 
