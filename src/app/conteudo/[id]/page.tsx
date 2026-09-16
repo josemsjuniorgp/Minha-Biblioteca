@@ -2,6 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { AppHeader } from "@/components/app-header";
+import { AdSlot } from "@/components/ad-slot";
 import { contentThemeLabel } from "@/lib/content-themes";
 
 const TIER_LABEL: Record<string, string> = {
@@ -128,6 +129,10 @@ export default async function ConteudoPage(props: PageProps<"/conteudo/[id]">) {
               {item.body}
             </p>
           )}
+
+          <div className="border-t border-border pt-8">
+            <AdSlot format="rectangle" />
+          </div>
         </div>
       </main>
     </>

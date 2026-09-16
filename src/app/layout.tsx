@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Oswald, Inter } from "next/font/google";
+import { CookieConsent } from "@/components/cookie-consent";
 import "./globals.css";
 
 const oswald = Oswald({
@@ -28,7 +29,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="pt-BR"
       className={`${oswald.variable} ${inter.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-sans">{children}</body>
+      <body className="min-h-full flex flex-col font-sans">
+        {children}
+        <CookieConsent />
+      </body>
     </html>
   );
 }
