@@ -1,6 +1,8 @@
-// Tipos escritos à mão a partir de supabase/migrations/0001_init.sql.
-// Assim que o projeto Supabase existir, regenerar com:
+// Tipos escritos à mão a partir de supabase/migrations/0001_init.sql e
+// 0002_content_themes.sql. Assim que o projeto Supabase existir, regenerar com:
 //   npx supabase gen types typescript --project-id <id> > src/lib/supabase/types.ts
+
+import type { ContentTheme } from "@/lib/content-themes";
 
 export type AccessTier = "gratuito" | "prata" | "ouro";
 export type ContentType = "curso" | "artigo" | "aula" | "material";
@@ -56,7 +58,7 @@ export interface Database {
           body: string | null;
           external_url: string | null;
           file_path: string | null;
-          theme: string;
+          theme: ContentTheme;
           tier: AccessTier;
           status: ContentStatus;
           issues_certificate: boolean;
@@ -69,7 +71,7 @@ export interface Database {
         Insert: Partial<Database["public"]["Tables"]["content"]["Row"]> & {
           type: ContentType;
           title: string;
-          theme: string;
+          theme: ContentTheme;
           created_by: string;
         };
         Update: Partial<Database["public"]["Tables"]["content"]["Row"]>;

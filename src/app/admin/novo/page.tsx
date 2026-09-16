@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import Link from "next/link";
 import { createContent, type ContentFormState } from "@/lib/actions/content";
+import { CONTENT_THEMES } from "@/lib/content-themes";
 
 const initialState: ContentFormState = { error: null };
 
@@ -56,7 +57,16 @@ export default function NovoConteudoPage() {
 
           <label className="flex flex-col gap-1 text-sm">
             Tema
-            <input name="theme" required placeholder="Ex.: Segurança do trabalho" className={inputClass} />
+            <select name="theme" required className={inputClass} defaultValue="">
+              <option value="" disabled>
+                Selecione um tema
+              </option>
+              {CONTENT_THEMES.map((theme) => (
+                <option key={theme.value} value={theme.value}>
+                  {theme.label}
+                </option>
+              ))}
+            </select>
           </label>
 
           <label className="flex flex-col gap-1 text-sm">

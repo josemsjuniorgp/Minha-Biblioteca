@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { AppHeader } from "@/components/app-header";
+import { contentThemeLabel } from "@/lib/content-themes";
 
 const TIER_LABEL: Record<string, string> = {
   gratuito: "Gratuito",
@@ -114,9 +116,10 @@ export default async function InicioPage() {
             {content && content.length > 0 ? (
               <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {content.map((item) => (
-                  <article
+                  <Link
                     key={item.id}
-                    className="rounded-lg border border-border bg-card p-5"
+                    href={`/conteudo/${item.id}`}
+                    className="rounded-lg border border-border bg-card p-5 transition-colors hover:border-brand-amber"
                   >
                     <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wide">
                       <span className="text-brand-amber">{CONTENT_TYPE_LABEL[item.type]}</span>
@@ -138,8 +141,8 @@ export default async function InicioPage() {
                     {item.summary && (
                       <p className="mt-2 text-sm text-brand-ink/70">{item.summary}</p>
                     )}
-                    <p className="mt-3 text-xs text-muted">{item.theme}</p>
-                  </article>
+                    <p className="mt-3 text-xs text-muted">{contentThemeLabel(item.theme)}</p>
+                  </Link>
                 ))}
               </div>
             ) : (

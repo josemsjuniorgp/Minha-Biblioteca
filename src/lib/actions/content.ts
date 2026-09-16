@@ -7,6 +7,7 @@ import type {
   AccessTier,
   ContentType,
 } from "@/lib/supabase/types";
+import type { ContentTheme } from "@/lib/content-themes";
 
 export type ContentFormState = { error: string | null };
 
@@ -21,7 +22,7 @@ export async function createContent(
   if (!user) redirect("/login");
 
   const title = String(formData.get("title") ?? "").trim();
-  const theme = String(formData.get("theme") ?? "").trim();
+  const theme = String(formData.get("theme") ?? "").trim() as ContentTheme;
   const type = String(formData.get("type") ?? "") as ContentType;
   const tier = String(formData.get("tier") ?? "gratuito") as AccessTier;
 

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { AppHeader } from "@/components/app-header";
 import { approveContent, rejectContent } from "@/lib/actions/content";
+import { contentThemeLabel } from "@/lib/content-themes";
 
 const STATUS_LABEL: Record<string, string> = {
   em_aprovacao: "Aguardando aprovação",
@@ -76,7 +77,7 @@ export default async function AdminPage() {
                     <div>
                       <p className="font-medium text-brand-ink">{item.title}</p>
                       <p className="text-xs text-muted">
-                        {item.type} · {item.theme} · nível {item.tier}
+                        {item.type} · {contentThemeLabel(item.theme)} · nível {item.tier}
                       </p>
                     </div>
                     <div className="flex gap-2">
